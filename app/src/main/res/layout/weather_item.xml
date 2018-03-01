@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <TextView
+        android:id="@+id/id_weekday_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="星期一"
+        />
+    <TextView
+        android:id="@+id/id_today_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/id_weekday_text_view"
+        tools:text="今天"
+        />
+    <TextView
+        android:id="@+id/id_cond_d_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="晴"
+        android:layout_centerHorizontal="true"
+        />
+    <TextView
+        android:id="@+id/id_max_tmp_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="26"
+        android:layout_toLeftOf="@+id/id_min_tmp_text_view"
+        />
+    <TextView
+        android:id="@+id/id_min_tmp_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="-22"
+        android:layout_alignParentRight="true"
+        />
+</RelativeLayout>
