@@ -1,7 +1,10 @@
 package com.muyi.zhaofei.zfweather;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,9 +22,13 @@ import java.util.Calendar;
 import java.util.List;
 
 public class CitysActivity extends BasicActivity {
+    private static final String EXTRA_CITY = "com.muyi.zhaofei.zfweather.CitysActivity_city";
 
-    public static Intent newInstance(Context context) {
+    List<String> mCitys = new ArrayList<>();
+
+    public static Intent newInstance(Context context, String city) {
         Intent intent = new Intent(context, CitysActivity.class);
+        intent.putExtra(EXTRA_CITY, city);
         return intent;
     }
     private class CityViewHolder extends RecyclerView.ViewHolder {
@@ -68,19 +75,65 @@ public class CitysActivity extends BasicActivity {
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.id_citys_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        List<String> citys = new ArrayList<>();
-        citys.add("北京");
-        citys.add("上海");
-        citys.add("深圳");
+        Intent intent = getIntent();
+        String city = intent.getStringExtra(EXTRA_CITY);
+        mCitys.add(city);
+        mCitys.add(city);
 
-        CityAdapter adapter = new CityAdapter(citys);
+        mCitys.set(0, "city");
+
+        CityAdapter adapter = new CityAdapter(mCitys);
         recyclerView.setAdapter(adapter);
+        final SelectedCitysDatabaseHelper helper = new SelectedCitysDatabaseHelper(this, "SelectedCitys.db", null, 1);
 
         Button addButton = (Button)findViewById(R.id.id_add_city_button);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                SQLiteDatabase db = helper.getWritableDatabase();
+                ContentValues values = new ContentValues();
+                values.put("city", "吉林");
+                db.insert("City", null, values);
+                values.clear();
+                values.put("city", "哈尔冰");
+                db.insert("City", null, values);
+                values.clear();
+                values.put("city", "南京");
+                db.insert("City", null, values);
+                values.clear();
+            }
+        });
+        Button dButton = (Button)findViewById(R.id.id_d_city_button);
+        dButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SQLiteDatabase db = helper.getWritableDatabase();
+                db.delete("City", "city = ?", new String[]{"南京"});
+            }
+        });
+        Button cButton = (Button)findViewById(R.id.id_c_city_button);
+        cButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SQLiteDatabase db = helper.getWritableDatabase();
+                ContentValues values = new ContentValues();
+                values.put("city", "广州");
+                db.update("City", values, "city = ?", new String[]{"吉林"});
+            }
+        });
+        Button sButton = (Button)findViewById(R.id.id_s_city_button);
+        sButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SQLiteDatabase db = helper.getWritableDatabase();
+                Cursor cursor = db.query("City", null, null, null, null, null, null);
+                if (cursor.moveToFirst()) {
+                    do {
+                        String city = cursor.getString(cursor.getColumnIndex("city"));
+                        Log.d("CitysActivity", "city: " + city);
+                    } while (cursor.moveToNext());
+                }
+                cursor.close();
             }
         });
     }

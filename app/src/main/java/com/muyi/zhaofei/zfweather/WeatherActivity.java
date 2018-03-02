@@ -39,6 +39,7 @@ public class WeatherActivity extends BasicActivity {
     private String mLon;
     private String mLat;
     private Date mRefreshTime;
+    private List<Weather> mWeathers;
 
     private class WeatherViewHolder extends RecyclerView.ViewHolder {
         TextView mWeekdayTextView;
@@ -174,6 +175,7 @@ public class WeatherActivity extends BasicActivity {
             recyclerView.setLayoutManager(layoutManager);
             WeatherAdapter adapter = new WeatherAdapter(weathers);
             recyclerView.setAdapter(adapter);
+            mWeathers = weathers;
         }
     }
 
@@ -197,7 +199,7 @@ public class WeatherActivity extends BasicActivity {
         citysButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = CitysActivity.newInstance(WeatherActivity.this);
+                Intent intent = CitysActivity.newInstance(WeatherActivity.this, mWeathers.get(0).getCity());
                 startActivity(intent);
 
             }
