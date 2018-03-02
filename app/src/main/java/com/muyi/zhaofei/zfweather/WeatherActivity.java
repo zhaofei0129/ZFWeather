@@ -33,15 +33,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class WeatherActivity extends AppCompatActivity {
+public class WeatherActivity extends BasicActivity {
     private static final String TAG = "WeatherActivity";
-    private static final String API_KEY = "56271dea21834020848a6e838fd53ecf";
 
     private String mLon;
     private String mLat;
     private Date mRefreshTime;
-
-    //private List<Weather> mWeathers = new ArrayList<>();
 
     private class WeatherViewHolder extends RecyclerView.ViewHolder {
         TextView mWeekdayTextView;
@@ -102,64 +99,54 @@ public class WeatherActivity extends AppCompatActivity {
         @Override
         protected List<Weather> doInBackground(Void... voids) {
             // 得到weather数据
-//            String urlSpec = "https://free-api.heweather.com/s6/weather/now?location=CN101190101&key=" + API_KEY;
-//            String urlSpec1 = "https://free-api.heweather.com/s6/air/now?location=CN101190101&key=" + API_KEY;
-//            String urlSpec2 = "http://www.baidu.com";
-//            String jsonStr = getJsonStr(urlSpec2);
-
-            //
-////            String jsonStr = HttpUtil.sendHttpRequest(urlSpec);
-//
-//            try {
-////                {
-////                    String jsonStr = new HttpUtil().getUrlString(urlSpec);
-////                    JSONObject weatherNowJson = new JSONObject(jsonStr);
-////                    JSONArray heWeather6Array = weatherNowJson.getJSONArray("HeWeather6");
-////                    JSONObject heWeather6 = heWeather6Array.getJSONObject(0);
-////                    JSONObject basic = heWeather6.getJSONObject("basic");
-////                    JSONObject now = heWeather6.getJSONObject("now");
-////
-////                    String city = basic.getString("parent_city");
-////                    String condNow = now.getString("cond_txt");
-////                    String tmpNow = now.getString("tmp");
-////                    weather.setCity(city);
-////                    weather.setConditionNow(condNow);
-////                    weather.setTmpNow(tmpNow);
-////                }
-//
-//                {
-//                    urlSpec = "https://free-api.heweather.com/s6/air/now?location=" + mLon + "," + mLat + "&key=" + API_KEY;
-//                    String jsonStr = new HttpUtil().getUrlString(urlSpec);
-//                    JSONObject airNowJson = new JSONObject(jsonStr);
-//                    JSONArray heWeather6Array = airNowJson.getJSONArray("HeWeather6");
-//                    JSONObject heWeather6 = heWeather6Array.getJSONObject(0);
-//                    JSONObject airNowCity = heWeather6.getJSONObject("air_now_city");
-//
-//                    String airQuality = airNowCity.getString("qlty");
-//                    weather.setAirQuality(airQuality);
-//                }
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
             List<Weather> weathers = new ArrayList<>();
+            final String HE_WEATHER_API_KEY = "56271dea21834020848a6e838fd53ecf";
+            final String HE_WEATHER_ADDRESS = "https://free-api.heweather.com/s6/";
             for (int i = 0; i < 3; i++) {
-                if (i == 0) {
-//                    String nowAddress = "http://...................";
-//                    String jsonStr = getJsonStr(nowAddress);
-                }
-//                String nowAddress = "http://...................";
-//                String jsonStr = getJsonStr(nowAddress);
-                // TODO ?? json????Weathers
                 Weather weather = new Weather();
+                if (i == 0) {
+                    String weatherNowAddress =
+                            HE_WEATHER_ADDRESS + "weather/now?location=" + mLon + "," + mLat + "&key=" + HE_WEATHER_API_KEY;
+                    String weatherNowJsonStr = getJsonStr(weatherNowAddress);
+                    try {
+                        JSONObject weatherNowJson = new JSONObject(weatherNowJsonStr);
+                        JSONArray heWeather6Array = weatherNowJson.getJSONArray("HeWeather6");
+                        JSONObject heWeather6 = heWeather6Array.getJSONObject(0);
+                        JSONObject now = heWeather6.getJSONObject("now");
+                        JSONObject basic = heWeather6.getJSONObject("basic");
+                        weather.setCity(basic.getString("parent_city"));
+                        weather.setConditionNow(now.getString("cond_txt"));
+                        weather.setTmpNow(now.getString("tmp"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                String weatherForecastAddress =
+                        HE_WEATHER_ADDRESS + "weather/forecast?location=" + mLon + "," + mLat + "&key=" + HE_WEATHER_API_KEY;
+                String weatherForecastJsonStr = getJsonStr(weatherForecastAddress);
+                try {
+                    JSONObject weatherForecastJson = new JSONObject(weatherForecastJsonStr);
+                    JSONArray heWeather6Array = weatherForecastJson.getJSONArray("HeWeather6");
+                    JSONObject heWeather6 = heWeather6Array.getJSONObject(0);
+                    JSONArray dailyForecastArray = heWeather6.getJSONArray("daily_forecast");
+                    JSONObject dailyForcast = dailyForecastArray.getJSONObject(i);
+                    weather.setConditionDaytime(dailyForcast.getString("cond_txt_d"));
+                    weather.setMaxTmp(dailyForcast.getString("tmp_max"));
+                    weather.setMinTmp(dailyForcast.getString("tmp_min"));
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+                // TODO ?? json????Weathers
 //                weather.setAirQuality("????");
-                weather.setTmpNow("-10");
-                weather.setConditionNow("多云");
-                weather.setCity("北京");
-                weather.setConditionDaytime("晴");
-                weather.setMaxTmp("22");
-                weather.setMinTmp("-22");
+//                weather.setTmpNow("-10");
+//                weather.setConditionNow("多云");
+//                weather.setCity("北京");
+//                weather.setConditionDaytime("晴");
+//                weather.setMaxTmp("22");
+//                weather.setMinTmp("-22");
                 weathers.add(weather);
             }
 
@@ -174,8 +161,6 @@ public class WeatherActivity extends AppCompatActivity {
             cityTextView.setText(weatherToday.getCity());
             TextView condNowTextView = (TextView)findViewById(R.id.id_cond_now_text_view);
             condNowTextView.setText(weatherToday.getConditionNow());
-//            TextView airQualityTextView = (TextView)findViewById(R.id.id_air_quality_text_view);
-//            airQualityTextView.setText(weather.getAirQuality());
             TextView tmpNowTextView = (TextView)findViewById(R.id.id_tmp_now_text_view);
             tmpNowTextView.setText(weatherToday.getTmpNow() + " °");
             TextView refreshTimeTextView = (TextView)findViewById(R.id.id_refresh_time_text_view);
@@ -197,13 +182,9 @@ public class WeatherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         setContentView(R.layout.activity_weather);
-//        for (int i = 0; i < 3; i++) {
-//            Weather weather = new Weather();
-//            weather.setCity("nanjing");
-//            mWeathers.add(weather);
-//        }
-        Location location = LocationUtils.getInstance( WeatherActivity.this ).showLocation();
 
+        Location location = LocationUtils.getInstance(this).showLocation();
+        // location为null，需要开权限
         if (location != null) {
             mLon = String.format("%.2f", location.getLongitude());
             mLat = String.format("%.2f", location.getLatitude());
@@ -216,8 +197,9 @@ public class WeatherActivity extends AppCompatActivity {
         citysButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(WeatherActivity.this, CitysActivity.class);
+                Intent intent = CitysActivity.newInstance(WeatherActivity.this);
                 startActivity(intent);
+
             }
         });
 
@@ -226,7 +208,7 @@ public class WeatherActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LocationUtils.getInstance( this ).removeLocationUpdatesListener();
+        LocationUtils.getInstance(this).removeLocationUpdatesListener();
     }
 
     private String getJsonStr(String address) {

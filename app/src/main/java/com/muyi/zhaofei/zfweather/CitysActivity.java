@@ -1,5 +1,6 @@
 package com.muyi.zhaofei.zfweather;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -16,8 +18,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class CitysActivity extends AppCompatActivity {
+public class CitysActivity extends BasicActivity {
 
+    public static Intent newInstance(Context context) {
+        Intent intent = new Intent(context, CitysActivity.class);
+        return intent;
+    }
     private class CityViewHolder extends RecyclerView.ViewHolder {
         TextView mCityTextView;
 
@@ -56,6 +62,7 @@ public class CitysActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         setContentView(R.layout.activity_citys);
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.id_citys_recycler_view);

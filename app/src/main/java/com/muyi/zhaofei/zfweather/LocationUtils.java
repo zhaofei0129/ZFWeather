@@ -13,18 +13,17 @@ import android.util.Log;
 
 import java.util.List;
 
-
 /**
- * Created by Zhao Fei on 2018/2/20.
+ * Created by Zhao Fei on 2018/3/2.
  */
 
 public class LocationUtils {
+    private static final String TAG = "LocationUtils";
     private volatile static LocationUtils uniqueInstance;
     private LocationManager locationManager;
     private String locationProvider;
     private Location location;
     private Context mContext;
-    private static final String TAG = "LocationUtils";
 
     private LocationUtils(Context context) {
         mContext = context;
