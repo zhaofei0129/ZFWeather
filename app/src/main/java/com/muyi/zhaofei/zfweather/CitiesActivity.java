@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CitiesActivity extends BasicActivity {
-    public static final String EXTRA_SELECTED_CITY = "com.muyi.zhaofei.zfweather.CitysActivity_selected_city";
+//    public static final String EXTRA_SELECTED_CITY = "com.muyi.zhaofei.zfweather.CitysActivity_selected_city";
 
     private class CityViewHolder extends RecyclerView.ViewHolder {
         TextView mCityTextView;
@@ -47,9 +47,9 @@ public class CitiesActivity extends BasicActivity {
                     City city = new City();
                     city.setName((String) holder.mCityTextView.getText());
                     CityLab.getSingleInstance(CitiesActivity.this).addCity(city);
-                    Intent intent = new Intent();
-                    intent.putExtra(EXTRA_SELECTED_CITY, city.getName());
-                    setResult(RESULT_OK, intent);
+//                    Intent intent = new Intent();
+//                    intent.putExtra(EXTRA_SELECTED_CITY, city.getName());
+//                    setResult(RESULT_OK, intent);
                     finish();
                 }
             });

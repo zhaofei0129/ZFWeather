@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 public class CityLab {
-    private List<City> mCities = new ArrayList<>();
+    private List<City> mCities;
     private Context mContext;
     private SQLiteDatabase mDatabase;
 
@@ -30,7 +30,8 @@ public class CityLab {
     private CityLab(Context context) {
         mContext = context.getApplicationContext();
         mDatabase = new CityDatabaseHelper(mContext).getWritableDatabase();
-//        mCities = new ArrayList<>();
+        // 初始化mCities
+        mCities = new ArrayList<>();
         Cursor cursor = mDatabase.query(CityDatabaseHelper.CITY_TABLE, null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
@@ -55,7 +56,6 @@ public class CityLab {
 
     public List<City> getCities() {
         return mCities;
-//        return new ArrayList<>();
     }
 
     public City getSelectedCity(boolean isSelected) {
@@ -68,10 +68,19 @@ public class CityLab {
     }
 
     public void addCity(City city) {
-//        mCities.add(city);
-        ContentValues values = getContentValues(city);
-        mDatabase.insert(CityDatabaseHelper.CITY_TABLE, null, values);
-        mCities.add(city);
+        boolean isRepeated = false;
+        for (City c: mCities) {
+            if (city.getName().equals(c.getName())) {
+                isRepeated = true;
+                break;
+            }
+        }
+        if (!isRepeated) {
+            mCities.add(city);
+            ContentValues values = getContentValues(city);
+            mDatabase.insert(CityDatabaseHelper.CITY_TABLE, null, values);
+        }
+
     }
 
     public void updateCity(City city) {
@@ -90,7 +99,9 @@ public class CityLab {
           if (cursor.moveToFirst()) {
               do {
                   String name = cursor.getString(cursor.getColumnIndex(CityDatabaseHelper.CITY_COL));
-                  Log.d("CityLab", "city: " + name);
+                  boolean isSelected = cursor.getInt(cursor.getColumnIndex(CityDatabaseHelper.IS_SELECTED_COL)) != 0;
+                  boolean isLocated = cursor.getInt(cursor.getColumnIndex(CityDatabaseHelper.IS_LOCATED_COL)) != 0;
+                  Log.d("CityLab", "city: " + name + "Selected: " + isSelected + "Located: " + isLocated);
               } while (cursor.moveToNext());
           }
           cursor.close();

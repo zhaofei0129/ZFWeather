@@ -16,6 +16,8 @@ import java.util.List;
 
 public class SelectedCitiesActivity extends BasicActivity {
     private static final String EXTRA_CURRENT_CITY_NAME = "com.muyi.zhaofei.zfweather.SelectedCitiesActivity_current_city_name";
+    public static final String EXTRA_SELECTED_CITY_NAME = "com.muyi.zhaofei.zfweather.SelectedCitiesActivity_selected_city_name";
+
     private static final String TAG = "SelectedCitiesActivity";
     private static final int REQUEST_CODE_CITIES_ACTIVITY = 1;
 
@@ -46,7 +48,18 @@ public class SelectedCitiesActivity extends BasicActivity {
         @Override
         public CityViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.city_item, null, false);
-            CityViewHolder holder = new CityViewHolder(view);
+            final CityViewHolder holder = new CityViewHolder(view);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    City city = new City();
+                    city.setName((String) holder.mCityTextView.getText());
+                    Intent intent = new Intent();
+                    intent.putExtra(EXTRA_SELECTED_CITY_NAME, city.getName());
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+            });
             return holder;
         }
 
@@ -67,14 +80,15 @@ public class SelectedCitiesActivity extends BasicActivity {
 //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         setContentView(R.layout.activity_selected_cities);
 
-
         Intent intent = getIntent();
         String name = intent.getStringExtra(EXTRA_CURRENT_CITY_NAME);
 
-        if (CityLab.getSingleInstance(this).getCities() == null)
+        if (CityLab.getSingleInstance(this).getCities().size() == 0)
         {
             City city = new City();
             city.setName(name);
+            city.setLocated(true);
+            city.setSelected(true);
             CityLab.getSingleInstance(this).addCity(city);
         }
 
@@ -105,17 +119,17 @@ public class SelectedCitiesActivity extends BasicActivity {
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REQUEST_CODE_CITIES_ACTIVITY:
-                if (resultCode == RESULT_OK) {
-                    String returnedData = data.getStringExtra(CitiesActivity.EXTRA_SELECTED_CITY);
-                    Log.d(TAG, "onActivityResult: " + returnedData);
-                }
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        switch (requestCode) {
+//            case REQUEST_CODE_CITIES_ACTIVITY:
+//                if (resultCode == RESULT_OK) {
+//                    String returnedData = data.getStringExtra(CitiesActivity.EXTRA_SELECTED_CITY);
+//                    Log.d(TAG, "onActivityResult: " + returnedData);
+//                }
+//        }
+//    }
 
     @Override
     protected void onResume() {

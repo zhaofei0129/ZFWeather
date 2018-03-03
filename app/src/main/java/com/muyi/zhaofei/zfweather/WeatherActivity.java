@@ -32,6 +32,7 @@ import java.util.List;
 
 public class WeatherActivity extends BasicActivity {
     private static final String TAG = "WeatherActivity";
+    private static final int REQUEST_CODE_SELECTED_CITIES_ACTIVITY = 1;
 
     private String mLon;
     private String mLat;
@@ -197,7 +198,7 @@ public class WeatherActivity extends BasicActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = SelectedCitiesActivity.newIntent(WeatherActivity.this, mWeathers.get(0).getCity());
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_SELECTED_CITIES_ACTIVITY);
 
             }
         });
@@ -238,6 +239,18 @@ public class WeatherActivity extends BasicActivity {
             if (connection != null) {
                 connection.disconnect();
             }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODE_SELECTED_CITIES_ACTIVITY:
+                if (resultCode == RESULT_OK) {
+                    String returnedData = data.getStringExtra(SelectedCitiesActivity.EXTRA_SELECTED_CITY_NAME);
+                    Log.d(TAG, "onActivityResult: " + returnedData);
+                }
         }
     }
 }
