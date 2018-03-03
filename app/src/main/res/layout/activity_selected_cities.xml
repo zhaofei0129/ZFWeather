@@ -6,10 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.muyi.zhaofei.zfweather.CitysActivity">
+    tools:context="com.muyi.zhaofei.zfweather.SelectedCitiesActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/id_citys_recycler_view"
+        android:id="@+id/id_selected_cities_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -34,23 +34,6 @@
             android:layout_height="wrap_content"
             android:text="+"
             />
-        <Button
-            android:id="@+id/id_d_city_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="-"
-            />
-        <Button
-            android:id="@+id/id_c_city_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="c"
-            />
-        <Button
-            android:id="@+id/id_s_city_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="s"
-            />
+
     </LinearLayout>
 </LinearLayout>
