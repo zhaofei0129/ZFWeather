@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +15,15 @@ import android.widget.TextView;
 import java.util.List;
 
 public class SelectedCitiesActivity extends BasicActivity {
-    private static final String EXTRA_CITY_NAME = "com.muyi.zhaofei.zfweather.CitysActivity_city";
+    private static final String EXTRA_CURRENT_CITY_NAME = "com.muyi.zhaofei.zfweather.SelectedCitiesActivity_current_city_name";
+    private static final String TAG = "SelectedCitiesActivity";
+    private static final int REQUEST_CODE_CITIES_ACTIVITY = 1;
+
+    private CityAdapter mAdapter;
 
     public static Intent newIntent(Context context, String city) {
         Intent intent = new Intent(context, SelectedCitiesActivity.class);
-        intent.putExtra(EXTRA_CITY_NAME, city);
+        intent.putExtra(EXTRA_CURRENT_CITY_NAME, city);
         return intent;
     }
     private class CityViewHolder extends RecyclerView.ViewHolder {
@@ -64,61 +69,57 @@ public class SelectedCitiesActivity extends BasicActivity {
 
 
         Intent intent = getIntent();
-        String name = intent.getStringExtra(EXTRA_CITY_NAME);
-        City city = new City();
-        city.setName(name);
-        city.setLocated(true);
-        CityLab.newInstance(this).addCity(city);
-//
-//        mCitys.set(0, "city");
-        List<City> cities = CityLab.newInstance(this).getCities();
+        String name = intent.getStringExtra(EXTRA_CURRENT_CITY_NAME);
+
+        if (CityLab.getSingleInstance(this).getCities() == null)
+        {
+            City city = new City();
+            city.setName(name);
+            CityLab.getSingleInstance(this).addCity(city);
+        }
+
+
+        List<City> cities = CityLab.getSingleInstance(this).getCities();
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.id_selected_cities_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        CityAdapter adapter = new CityAdapter(cities);
-        recyclerView.setAdapter(adapter);
+        mAdapter = new CityAdapter(cities);
+        recyclerView.setAdapter(mAdapter);
 //        final CityDatabaseHelper helper = new CityDatabaseHelper(this, "SelectedCitys.db", null, 1);
 
         Button addButton = (Button)findViewById(R.id.id_add_city_button);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                City city = new City();
-//                city.setName("吉林");
-//                CityLab.newInstance(SelectedCitiesActivity.this).addCity(city);
-//                city.setName("哈尔冰");
-//                CityLab.newInstance(SelectedCitiesActivity.this).addCity(city);
-//                city.setName("南京");
-//                CityLab.newInstance(SelectedCitiesActivity.this).addCity(city);
-                Intent intent = new Intent(SelectedCitiesActivity.this, CitiesActivity.class);
-                startActivity(intent);
+            Intent intent = new Intent(SelectedCitiesActivity.this, CitiesActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_CITIES_ACTIVITY);
             }
         });
-//        Button dButton = (Button)findViewById(R.id.id_d_city_button);
-//        dButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                City city = new City();
-//                city.setName("南京");
-//                CityLab.newInstance(SelectedCitiesActivity.this).deleteCity(city);
-//            }
-//        });
-//        Button cButton = (Button)findViewById(R.id.id_c_city_button);
-//        cButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                City city2 = new City();
-//                city2.setName("吉林");
-//                CityLab.newInstance(SelectedCitiesActivity.this).updateCity(city2);
-//            }
-//        });
-//        Button sButton = (Button)findViewById(R.id.id_s_city_button);
-//        sButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                CityLab.newInstance(SelectedCitiesActivity.this).query();
-//            }
-//        });
+        Button sButton = (Button)findViewById(R.id.id_s_city_button);
+        sButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CityLab.getSingleInstance(SelectedCitiesActivity.this).query();
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODE_CITIES_ACTIVITY:
+                if (resultCode == RESULT_OK) {
+                    String returnedData = data.getStringExtra(CitiesActivity.EXTRA_SELECTED_CITY);
+                    Log.d(TAG, "onActivityResult: " + returnedData);
+                }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mAdapter.notifyDataSetChanged();
     }
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="JiangSu">
+        <item>南京</item>
+        <item>无锡</item>
+        <item>徐州</item>
+        <item>常州</item>
+        <item>苏州</item>
+        <item>南通</item>
+        <item>连云港</item>
+        <item>淮阴</item>
+        <item>盐城</item>
+        <item>扬州</item>
+        <item>镇江</item>
+        <item>泰州</item>
+        <item>宿迁</item>
+    </string-array>
+</resources>

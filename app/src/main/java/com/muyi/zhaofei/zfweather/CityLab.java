@@ -14,13 +14,13 @@ import java.util.List;
  */
 
 public class CityLab {
-//    private List<City> mCities;
+    private List<City> mCities = new ArrayList<>();
     private Context mContext;
     private SQLiteDatabase mDatabase;
 
     private static CityLab sCityLab;
 
-    public static CityLab newInstance(Context context) {
+    public static CityLab getSingleInstance(Context context) {
         if (sCityLab == null) {
             sCityLab = new CityLab(context);
         }
@@ -31,12 +31,31 @@ public class CityLab {
         mContext = context.getApplicationContext();
         mDatabase = new CityDatabaseHelper(mContext).getWritableDatabase();
 //        mCities = new ArrayList<>();
+        Cursor cursor = mDatabase.query(CityDatabaseHelper.CITY_TABLE, null, null, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                String name = cursor.getString(cursor.getColumnIndex(CityDatabaseHelper.CITY_COL));
+                boolean isSelected = cursor.getInt(cursor.getColumnIndex(CityDatabaseHelper.IS_SELECTED_COL)) != 0;
+                boolean isLocated = cursor.getInt(cursor.getColumnIndex(CityDatabaseHelper.IS_LOCATED_COL)) != 0;
+                City city = new City();
+                city.setName(name);
+                city.setLocated(isLocated);
+                city.setSelected(isSelected);
+                mCities.add(city);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
 
     }
+//    private CityLab(Context context) {
+//        mDatabase = new CityDatabaseHelper(context.getApplicationContext()).getWritableDatabase();
+////        mCities = new ArrayList<>();
+//
+//    }
 
     public List<City> getCities() {
-//        return mCities;
-        return new ArrayList<>();
+        return mCities;
+//        return new ArrayList<>();
     }
 
     public City getSelectedCity(boolean isSelected) {
@@ -52,6 +71,7 @@ public class CityLab {
 //        mCities.add(city);
         ContentValues values = getContentValues(city);
         mDatabase.insert(CityDatabaseHelper.CITY_TABLE, null, values);
+        mCities.add(city);
     }
 
     public void updateCity(City city) {
@@ -66,14 +86,14 @@ public class CityLab {
     }
 
     public void query() {
-                Cursor cursor = mDatabase.query("City", null, null, null, null, null, null);
-                if (cursor.moveToFirst()) {
-                    do {
-                        String name = cursor.getString(cursor.getColumnIndex(CityDatabaseHelper.CITY_COL));
-                        Log.d("CityLab", "city: " + name);
-                    } while (cursor.moveToNext());
-                }
-                cursor.close();
+          Cursor cursor = mDatabase.query(CityDatabaseHelper.CITY_TABLE, null, null, null, null, null, null);
+          if (cursor.moveToFirst()) {
+              do {
+                  String name = cursor.getString(cursor.getColumnIndex(CityDatabaseHelper.CITY_COL));
+                  Log.d("CityLab", "city: " + name);
+              } while (cursor.moveToNext());
+          }
+          cursor.close();
     }
 
     private ContentValues getContentValues(City city) {

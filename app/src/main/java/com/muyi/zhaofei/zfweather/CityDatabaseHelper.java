@@ -15,7 +15,11 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
     public static final String IS_SELECTED_COL = "isSelected";
     public static final String IS_LOCATED_COL = "isLocated";
 
-    public static final String CREATE_CITY = "create table " + CITY_TABLE +" (id integer primary key autoincrement, " + CITY_COL + " text, " + IS_SELECTED_COL + " blob, " + IS_LOCATED_COL + " blob)";
+    public static final String CREATE_CITY = "create table "
+            + CITY_TABLE + " (id integer primary key autoincrement, "
+            + CITY_COL + " text, "
+            + IS_SELECTED_COL + " integer, "
+            + IS_LOCATED_COL + " integer)";
 
     private Context mContext;
 
@@ -24,7 +28,7 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 //        mContext = context;
 //    }
     public CityDatabaseHelper(Context context) {
-        super(context, "City.db", null, 3);
+        super(context, "City.db", null, 7);
         mContext = context;
     }
 
