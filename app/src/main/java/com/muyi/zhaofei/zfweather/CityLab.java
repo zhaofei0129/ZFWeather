@@ -15,7 +15,6 @@ import java.util.List;
 
 public class CityLab {
     private List<City> mCities;
-    private Context mContext;
     private SQLiteDatabase mDatabase;
 
     private static CityLab sCityLab;
@@ -28,8 +27,7 @@ public class CityLab {
     }
 
     private CityLab(Context context) {
-        mContext = context.getApplicationContext();
-        mDatabase = new CityDatabaseHelper(mContext).getWritableDatabase();
+        mDatabase = new CityDatabaseHelper(context.getApplicationContext()).getWritableDatabase();
         // 初始化mCities
         mCities = new ArrayList<>();
         Cursor cursor = mDatabase.query(CityDatabaseHelper.CITY_TABLE, null, null, null, null, null, null);

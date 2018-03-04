@@ -30,11 +30,15 @@ public class SelectedCitiesActivity extends BasicActivity {
     }
     private class CityViewHolder extends RecyclerView.ViewHolder {
         TextView mCityTextView;
-
+        TextView mLocatedTextView;
+        TextView mSelectedTextView;
 
         public CityViewHolder(View view) {
             super(view);
             mCityTextView = (TextView)view.findViewById(R.id.id_city_text_view);
+            mLocatedTextView = (TextView)view.findViewById(R.id.id_locate_text_view);
+            mSelectedTextView = (TextView)view.findViewById(R.id.id_selected_text_view);
+
         }
     }
 
@@ -69,6 +73,16 @@ public class SelectedCitiesActivity extends BasicActivity {
         public void onBindViewHolder(CityViewHolder holder, int position) {
             String name = mCitys.get(position).getName();
             holder.mCityTextView.setText(name);
+            if (mCitys.get(position).isSelected()) {
+                holder.mSelectedTextView.setText("选择");
+            } else {
+                holder.mSelectedTextView.setText("");
+            }
+            if (mCitys.get(position).isLocated()) {
+                holder.mLocatedTextView.setText("定位");
+            } else {
+                holder.mLocatedTextView.setText("");
+            }
         }
 
         @Override
@@ -112,13 +126,13 @@ public class SelectedCitiesActivity extends BasicActivity {
             startActivityForResult(intent, REQUEST_CODE_CITIES_ACTIVITY);
             }
         });
-        Button sButton = (Button)findViewById(R.id.id_s_city_button);
-        sButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CityLab.getSingleInstance(SelectedCitiesActivity.this).query();
-            }
-        });
+//        Button sButton = (Button)findViewById(R.id.id_s_city_button);
+//        sButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                CityLab.getSingleInstance(SelectedCitiesActivity.this).query();
+//            }
+//        });
     }
 
 //    @Override

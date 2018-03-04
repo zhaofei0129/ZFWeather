@@ -9,6 +9,7 @@ import java.util.UUID;
 public class Weather {
     private String mCity;   // 市
     private String mConditionNow;  // 当前天气状况
+    private String mConditionDaytimeCode;
     private String mTmpNow;    // 当前温度
     private String mConditionDaytime;
     private String mMaxTmp;
@@ -20,6 +21,14 @@ public class Weather {
     }
     public UUID getUUID() {
         return mUUID;
+    }
+
+    public String getConditionDaytimeCode() {
+        return mConditionDaytimeCode;
+    }
+
+    public void setConditionDaytimeCode(String conditionDaytimeCode) {
+        mConditionDaytimeCode = conditionDaytimeCode;
     }
 
     public String getCity() {

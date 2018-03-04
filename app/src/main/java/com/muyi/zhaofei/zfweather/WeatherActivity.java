@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -43,9 +44,11 @@ public class WeatherActivity extends BasicActivity {
     private String mCityName;
 
     private class WeatherViewHolder extends RecyclerView.ViewHolder {
+
         TextView mWeekdayTextView;
         TextView mTodayTextView;
-        TextView mCondDTextView;
+//        TextView mCondDTextView;
+        ImageView mCondDImageView;
         TextView mMaxTmpTextView;
         TextView mMinTmpTextView;
 
@@ -53,7 +56,8 @@ public class WeatherActivity extends BasicActivity {
             super(view);
             mWeekdayTextView = (TextView)view.findViewById(R.id.id_weekday_text_view);
             mTodayTextView = (TextView)view.findViewById(R.id.id_today_text_view);
-            mCondDTextView = (TextView)view.findViewById(R.id.id_cond_d_text_view);
+//            mCondDTextView = (TextView)view.findViewById(R.id.id_cond_d_text_view);
+            mCondDImageView = (ImageView)view.findViewById(R.id.id_cond_d_image_view);
             mMaxTmpTextView = (TextView)view.findViewById(R.id.id_max_tmp_text_view);
             mMinTmpTextView = (TextView)view.findViewById(R.id.id_min_tmp_text_view);
         }
@@ -85,7 +89,9 @@ public class WeatherActivity extends BasicActivity {
                 holder.mTodayTextView.setText("今天");
             }
             Log.d(TAG, "onBindViewHolder: ");
-            holder.mCondDTextView.setText(weather.getConditionDaytime());
+//            holder.mCondDTextView.setText(weather.getConditionDaytime());
+            // TODO 将图片名称以字母开头，根据不同天气代码返回相应。。。
+            holder.mCondDImageView.setImageResource(R.drawable.w100);
             holder.mMaxTmpTextView.setText(weather.getMaxTmp());
             holder.mMinTmpTextView.setText(weather.getMinTmp());
         }
@@ -160,23 +166,14 @@ public class WeatherActivity extends BasicActivity {
                     JSONObject heWeather6 = heWeather6Array.getJSONObject(0);
                     JSONArray dailyForecastArray = heWeather6.getJSONArray("daily_forecast");
                     JSONObject dailyForcast = dailyForecastArray.getJSONObject(i);
-                    weather.setConditionDaytime(dailyForcast.getString("cond_txt_d"));
+//                    weather.setConditionDaytime(dailyForcast.getString("cond_txt_d"));
+                    weather.setConditionDaytimeCode(dailyForcast.getString("cond_code_d"));
                     weather.setMaxTmp(dailyForcast.getString("tmp_max"));
                     weather.setMinTmp(dailyForcast.getString("tmp_min"));
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
-                // TODO ?? json????Weathers
-//                weather.setAirQuality("????");
-//                weather.setTmpNow("-10");
-//                weather.setConditionNow("多云");
-//                weather.setCity("北京");
-//                weather.setConditionDaytime("晴");
-//                weather.setMaxTmp("22");
-//                weather.setMinTmp("-22");
                 weathers.add(weather);
             }
 

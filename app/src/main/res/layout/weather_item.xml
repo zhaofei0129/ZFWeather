@@ -11,6 +11,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="星期一"
+        android:textColor="@color/white"
+        android:textSize="20dp"
         />
     <TextView
         android:id="@+id/id_today_text_view"
@@ -18,26 +20,37 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/id_weekday_text_view"
         tools:text="今天"
+        android:textColor="@color/white"
+        android:layout_marginLeft="12dp"
+        android:layout_alignBottom="@id/id_weekday_text_view"
         />
-    <TextView
-        android:id="@+id/id_cond_d_text_view"
+    <ImageView
+        android:id="@+id/id_cond_d_image_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="晴"
         android:layout_centerHorizontal="true"
         />
+
     <TextView
         android:id="@+id/id_max_tmp_text_view"
-        android:layout_width="wrap_content"
+        android:layout_width="32dp"
         android:layout_height="wrap_content"
         tools:text="26"
         android:layout_toLeftOf="@+id/id_min_tmp_text_view"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+
         />
     <TextView
         android:id="@+id/id_min_tmp_text_view"
-        android:layout_width="wrap_content"
+        android:layout_width="32dp"
         android:layout_height="wrap_content"
         tools:text="-22"
         android:layout_alignParentRight="true"
+        android:textColor="@color/gray"
+        android:layout_marginRight="12dp"
+        android:textAlignment="viewEnd"
+        android:layout_gravity="end"
+        android:textSize="20dp"
         />
 </RelativeLayout>
