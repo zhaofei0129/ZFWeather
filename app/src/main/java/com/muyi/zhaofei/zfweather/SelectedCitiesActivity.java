@@ -54,6 +54,8 @@ public class SelectedCitiesActivity extends BasicActivity {
                 public void onClick(View v) {
                     City city = new City();
                     city.setName((String) holder.mCityTextView.getText());
+                    city.setSelected(true);
+                    CityLab.getSingleInstance(SelectedCitiesActivity.this).updateCity(city);
                     Intent intent = new Intent();
                     intent.putExtra(EXTRA_SELECTED_CITY_NAME, city.getName());
                     setResult(RESULT_OK, intent);

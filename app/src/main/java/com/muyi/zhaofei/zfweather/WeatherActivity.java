@@ -22,8 +22,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,6 +40,7 @@ public class WeatherActivity extends BasicActivity {
     private String mLat;
     private Date mRefreshTime;
     private List<Weather> mWeathers;
+    private String mCityName;
 
     private class WeatherViewHolder extends RecyclerView.ViewHolder {
         TextView mWeekdayTextView;
@@ -101,12 +104,32 @@ public class WeatherActivity extends BasicActivity {
             List<Weather> weathers = new ArrayList<>();
             final String HE_WEATHER_API_KEY = "56271dea21834020848a6e838fd53ecf";
             final String HE_WEATHER_ADDRESS = "https://free-api.heweather.com/s6/";
+            String str = "";
+            Log.d(TAG, "doInBackground: sadddd" +mCityName);
+            try {
+                str = URLEncoder.encode(mCityName, "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             for (int i = 0; i < 3; i++) {
+
                 Weather weather = new Weather();
                 if (i == 0) {
-                    String weatherNowAddress =
-                            HE_WEATHER_ADDRESS + "weather/now?location=" + mLon + "," + mLat + "&key=" + HE_WEATHER_API_KEY;
+                    String weatherNowAddress;
+
+                    if (mCityName.isEmpty()) {
+                        weatherNowAddress = HE_WEATHER_ADDRESS + "weather/now?location=" + mLon + "," + mLat + "&key=" + HE_WEATHER_API_KEY;
+                        Log.d(TAG, "doInBackground: 123");
+                    } else {
+                        weatherNowAddress = HE_WEATHER_ADDRESS + "weather/now?location=" + str + "&key=" + HE_WEATHER_API_KEY;
+                        Log.d(TAG, "doInBackground: 456" + mCityName);
+                        Log.d(TAG, "doInBackground: 456" + weatherNowAddress);
+
+//                        weatherNowAddress = HE_WEATHER_ADDRESS + "weather/now?location=" + mCityName + "&key=" + HE_WEATHER_API_KEY;
+                    }
                     String weatherNowJsonStr = getJsonStr(weatherNowAddress);
+                    Log.d(TAG, "doInBackground: 1142222" + weatherNowJsonStr);
+
                     try {
                         JSONObject weatherNowJson = new JSONObject(weatherNowJsonStr);
                         JSONArray heWeather6Array = weatherNowJson.getJSONArray("HeWeather6");
@@ -120,9 +143,17 @@ public class WeatherActivity extends BasicActivity {
                         e.printStackTrace();
                     }
                 }
-                String weatherForecastAddress =
-                        HE_WEATHER_ADDRESS + "weather/forecast?location=" + mLon + "," + mLat + "&key=" + HE_WEATHER_API_KEY;
+                String weatherForecastAddress;
+                if (mCityName.isEmpty()) {
+                    weatherForecastAddress = HE_WEATHER_ADDRESS + "weather/forecast?location=" + mLon + "," + mLat + "&key=" + HE_WEATHER_API_KEY;
+                    Log.d(TAG, "doInBackground: 777");
+                } else {
+                    weatherForecastAddress = HE_WEATHER_ADDRESS + "weather/forecast?location=" + str + "&key=" + HE_WEATHER_API_KEY;
+                    Log.d(TAG, "doInBackground: 888");
+
+                }
                 String weatherForecastJsonStr = getJsonStr(weatherForecastAddress);
+                Log.d(TAG, "doInBackground: 1141" + weatherForecastJsonStr);
                 try {
                     JSONObject weatherForecastJson = new JSONObject(weatherForecastJsonStr);
                     JSONArray heWeather6Array = weatherForecastJson.getJSONArray("HeWeather6");
@@ -190,6 +221,11 @@ public class WeatherActivity extends BasicActivity {
             mLat = String.format("%.2f", location.getLatitude());
             Log.d(TAG, "onCreate: mLon, mLat = " + mLon +", " + mLat);
         }
+        if (CityLab.getSingleInstance(this).getCities().size() > 0) {
+            mCityName = CityLab.getSingleInstance(this).getSelectedCity().getName();
+        } else {
+            mCityName = "";
+        }
 
         new DoGetWeatherDataAsyncTask().execute();
 
@@ -243,13 +279,22 @@ public class WeatherActivity extends BasicActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: 11");
+
+    }
+
+    //    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_CODE_SELECTED_CITIES_ACTIVITY:
                 if (resultCode == RESULT_OK) {
-                    String returnedData = data.getStringExtra(SelectedCitiesActivity.EXTRA_SELECTED_CITY_NAME);
-                    Log.d(TAG, "onActivityResult: " + returnedData);
+                    mCityName = data.getStringExtra(SelectedCitiesActivity.EXTRA_SELECTED_CITY_NAME);
+                    Log.d(TAG, "onActivityResult: " + mCityName);
+                            new DoGetWeatherDataAsyncTask().execute();
+
                 }
         }
     }

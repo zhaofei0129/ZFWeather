@@ -58,12 +58,12 @@ public class CityLab {
         return mCities;
     }
 
-    public City getSelectedCity(boolean isSelected) {
-//        for (City city: mCities) {
-//            if (city.isSelected()) {
-//                return city;
-//            }
-//        }
+    public City getSelectedCity() {
+        for (City city: mCities) {
+            if (city.isSelected()) {
+                return city;
+            }
+        }
         return null;
     }
 
@@ -84,9 +84,21 @@ public class CityLab {
     }
 
     public void updateCity(City city) {
-        ContentValues values = getContentValues(city);
-//        mDatabase.update(CityDatabaseHelper.CITY_TABLE, values, CityDatabaseHelper.IS_LOCATED_COL + " = ?", new String[]{"1"});
-        mDatabase.update(CityDatabaseHelper.CITY_TABLE, values, CityDatabaseHelper.CITY_COL + " = ?", new String[]{"南京"});
+        boolean isSelected = false;
+        for (int i = 0; i < mCities.size(); i++) {
+            if (mCities.get(i).isSelected() == true) {
+                mCities.get(i).setSelected(false);
+                ContentValues values = getContentValues(mCities.get(i));
+                mDatabase.update(CityDatabaseHelper.CITY_TABLE, values, CityDatabaseHelper.IS_SELECTED_COL + " = ?", new String[]{"1"});
+            }
+            if (mCities.get(i).getName().equals(city.getName())) {
+                mCities.get(i).setSelected(true);
+                ContentValues values = getContentValues(city);
+                mDatabase.update(CityDatabaseHelper.CITY_TABLE, values, CityDatabaseHelper.CITY_COL + " = ?", new String[]{city.getName()});
+            }
+        }
+
+//        mDatabase.update(CityDatabaseHelper.CITY_TABLE, values, CityDatabaseHelper.CITY_COL + " = ?", new String[]{"南京"});
 
     }
 
