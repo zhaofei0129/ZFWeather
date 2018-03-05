@@ -96,17 +96,17 @@ public class SelectedCitiesActivity extends BasicActivity {
 //        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         setContentView(R.layout.activity_selected_cities);
 
-        Intent intent = getIntent();
-        String name = intent.getStringExtra(EXTRA_CURRENT_CITY_NAME);
-
-        if (CityLab.getSingleInstance(this).getCities().size() == 0)
-        {
-            City city = new City();
-            city.setName(name);
-            city.setLocated(true);
-            city.setSelected(true);
-            CityLab.getSingleInstance(this).addCity(city);
-        }
+//        Intent intent = getIntent();
+//        String name = intent.getStringExtra(EXTRA_CURRENT_CITY_NAME);
+//
+//        if (CityLab.getSingleInstance(this).getCities().size() == 0)
+//        {
+//            City city = new City();
+//            city.setName(name);
+//            city.setLocated(true);
+//            city.setSelected(true);
+//            CityLab.getSingleInstance(this).addCity(city);
+//        }
 
 
         List<City> cities = CityLab.getSingleInstance(this).getCities();

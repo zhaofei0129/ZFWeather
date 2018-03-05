@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
+import java.io.File;
+
 /**
  * Created by Zhao Fei on 2018/3/2.
  */
@@ -28,7 +30,7 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 //        mContext = context;
 //    }
     public CityDatabaseHelper(Context context) {
-        super(context, "City.db", null, 26);
+        super(context, "City.db", null, 33);
         mContext = context;
     }
 
@@ -41,6 +43,11 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("drop table if exists " + CITY_TABLE);
+        File file= new File("/data/data/"+ mContext.getPackageName()+ "/shared_prefs","WeatherActivity" + ".xml");
+        if(file.exists()){
+            file.delete();
+            Toast.makeText(mContext, "删除成功", Toast.LENGTH_SHORT).show();
+        }
         onCreate(db);
     }
 }

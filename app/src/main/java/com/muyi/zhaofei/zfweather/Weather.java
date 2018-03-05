@@ -28,7 +28,7 @@ public class Weather {
     }
 
     public void setConditionDaytimeCode(String conditionDaytimeCode) {
-        mConditionDaytimeCode = conditionDaytimeCode;
+        mConditionDaytimeCode = "w" + conditionDaytimeCode;
     }
 
     public String getCity() {
