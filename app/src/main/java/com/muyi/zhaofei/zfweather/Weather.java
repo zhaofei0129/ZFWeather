@@ -11,7 +11,6 @@ public class Weather {
     private String mConditionNow;  // 当前天气状况
     private String mConditionDaytimeCode;
     private String mTmpNow;    // 当前温度
-    private String mConditionDaytime;
     private String mMaxTmp;
     private String mMinTmp;
     private UUID mUUID;
@@ -53,14 +52,6 @@ public class Weather {
 
     public void setTmpNow(String tmpNow) {
         mTmpNow = tmpNow;
-    }
-
-    public String getConditionDaytime() {
-        return mConditionDaytime;
-    }
-
-    public void setConditionDaytime(String conditionDaytime) {
-        mConditionDaytime = conditionDaytime;
     }
 
     public String getMaxTmp() {

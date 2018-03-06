@@ -82,17 +82,21 @@ public class CityLab {
     }
 
     public void updateCity(City city) {
-        boolean isSelected = false;
         for (int i = 0; i < mCities.size(); i++) {
             if (mCities.get(i).isSelected() == true) {
                 mCities.get(i).setSelected(false);
                 ContentValues values = getContentValues(mCities.get(i));
                 mDatabase.update(CityDatabaseHelper.CITY_TABLE, values, CityDatabaseHelper.IS_SELECTED_COL + " = ?", new String[]{"1"});
+                break;
             }
+
+        }
+        for (int i = 0; i < mCities.size(); i++) {
             if (mCities.get(i).getName().equals(city.getName())) {
                 mCities.get(i).setSelected(true);
-                ContentValues values = getContentValues(city);
+                ContentValues values = getContentValues(mCities.get(i));
                 mDatabase.update(CityDatabaseHelper.CITY_TABLE, values, CityDatabaseHelper.CITY_COL + " = ?", new String[]{city.getName()});
+                break;
             }
         }
 
@@ -111,7 +115,7 @@ public class CityLab {
                   String name = cursor.getString(cursor.getColumnIndex(CityDatabaseHelper.CITY_COL));
                   boolean isSelected = cursor.getInt(cursor.getColumnIndex(CityDatabaseHelper.IS_SELECTED_COL)) != 0;
                   boolean isLocated = cursor.getInt(cursor.getColumnIndex(CityDatabaseHelper.IS_LOCATED_COL)) != 0;
-                  Log.d("CityLab", "city: " + name + "Selected: " + isSelected + "Located: " + isLocated);
+                  Log.d("CityLab", "    city: " + name + "  Selected: " + isSelected + "    Located: " + isLocated);
               } while (cursor.moveToNext());
           }
           cursor.close();

@@ -17,19 +17,18 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CitiesActivity extends BasicActivity {
-//    public static final String EXTRA_SELECTED_CITY = "com.muyi.zhaofei.zfweather.CitysActivity_selected_city";
 
-    private class CityViewHolder extends RecyclerView.ViewHolder {
-        TextView mCityTextView;
+    private class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
+        class ViewHolder extends RecyclerView.ViewHolder {
+            TextView mCityTextView;
 
 
-        public CityViewHolder(View view) {
-            super(view);
-            mCityTextView = (TextView)view;
+            public ViewHolder(View view) {
+                super(view);
+                mCityTextView = (TextView)view;
+            }
         }
-    }
 
-    private class CityAdapter extends RecyclerView.Adapter<CityViewHolder> {
         private List<String> mCitys;
 
         public CityAdapter(List<String> citys) {
@@ -37,9 +36,9 @@ public class CitiesActivity extends BasicActivity {
         }
 
         @Override
-        public CityViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_1, null, false);
-            final CityViewHolder holder = new CityViewHolder(view);
+            final ViewHolder holder = new ViewHolder(view);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -57,7 +56,7 @@ public class CitiesActivity extends BasicActivity {
         }
 
         @Override
-        public void onBindViewHolder(CityViewHolder holder, int position) {
+        public void onBindViewHolder(ViewHolder holder, int position) {
             String city = mCitys.get(position);
             holder.mCityTextView.setText(city);
         }

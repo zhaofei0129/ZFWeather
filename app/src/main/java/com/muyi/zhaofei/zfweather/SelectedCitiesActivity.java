@@ -15,7 +15,6 @@ import android.widget.TextView;
 import java.util.List;
 
 public class SelectedCitiesActivity extends BasicActivity {
-    private static final String EXTRA_CURRENT_CITY_NAME = "com.muyi.zhaofei.zfweather.SelectedCitiesActivity_current_city_name";
     public static final String EXTRA_SELECTED_CITY_NAME = "com.muyi.zhaofei.zfweather.SelectedCitiesActivity_selected_city_name";
 
     private static final String TAG = "SelectedCitiesActivity";
@@ -23,26 +22,25 @@ public class SelectedCitiesActivity extends BasicActivity {
 
     private CityAdapter mAdapter;
 
-    public static Intent newIntent(Context context, String city) {
+    public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, SelectedCitiesActivity.class);
-        intent.putExtra(EXTRA_CURRENT_CITY_NAME, city);
         return intent;
     }
-    private class CityViewHolder extends RecyclerView.ViewHolder {
-        TextView mCityTextView;
-        TextView mLocatedTextView;
-        TextView mSelectedTextView;
 
-        public CityViewHolder(View view) {
-            super(view);
-            mCityTextView = (TextView)view.findViewById(R.id.id_city_text_view);
-            mLocatedTextView = (TextView)view.findViewById(R.id.id_locate_text_view);
-            mSelectedTextView = (TextView)view.findViewById(R.id.id_selected_text_view);
+    private class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
+        class ViewHolder extends RecyclerView.ViewHolder {
+            TextView mCityTextView;
+            TextView mLocatedTextView;
+            TextView mSelectedTextView;
 
+            public ViewHolder(View view) {
+                super(view);
+                mCityTextView = (TextView)view.findViewById(R.id.id_city_text_view);
+                mLocatedTextView = (TextView)view.findViewById(R.id.id_locate_text_view);
+                mSelectedTextView = (TextView)view.findViewById(R.id.id_selected_text_view);
+
+            }
         }
-    }
-
-    private class CityAdapter extends RecyclerView.Adapter<CityViewHolder> {
         private List<City> mCitys;
 
         public CityAdapter(List<City> citys) {
@@ -50,9 +48,9 @@ public class SelectedCitiesActivity extends BasicActivity {
         }
 
         @Override
-        public CityViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.city_item, null, false);
-            final CityViewHolder holder = new CityViewHolder(view);
+            final ViewHolder holder = new ViewHolder(view);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -70,7 +68,7 @@ public class SelectedCitiesActivity extends BasicActivity {
         }
 
         @Override
-        public void onBindViewHolder(CityViewHolder holder, int position) {
+        public void onBindViewHolder(ViewHolder holder, int position) {
             String name = mCitys.get(position).getName();
             holder.mCityTextView.setText(name);
             if (mCitys.get(position).isSelected()) {
@@ -90,24 +88,11 @@ public class SelectedCitiesActivity extends BasicActivity {
             return mCitys.size();
         }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         setContentView(R.layout.activity_selected_cities);
-
-//        Intent intent = getIntent();
-//        String name = intent.getStringExtra(EXTRA_CURRENT_CITY_NAME);
-//
-//        if (CityLab.getSingleInstance(this).getCities().size() == 0)
-//        {
-//            City city = new City();
-//            city.setName(name);
-//            city.setLocated(true);
-//            city.setSelected(true);
-//            CityLab.getSingleInstance(this).addCity(city);
-//        }
-
 
         List<City> cities = CityLab.getSingleInstance(this).getCities();
 
@@ -116,7 +101,6 @@ public class SelectedCitiesActivity extends BasicActivity {
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new CityAdapter(cities);
         recyclerView.setAdapter(mAdapter);
-//        final CityDatabaseHelper helper = new CityDatabaseHelper(this, "SelectedCitys.db", null, 1);
 
         Button addButton = (Button)findViewById(R.id.id_add_city_button);
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -126,26 +110,7 @@ public class SelectedCitiesActivity extends BasicActivity {
             startActivityForResult(intent, REQUEST_CODE_CITIES_ACTIVITY);
             }
         });
-//        Button sButton = (Button)findViewById(R.id.id_s_city_button);
-//        sButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                CityLab.getSingleInstance(SelectedCitiesActivity.this).query();
-//            }
-//        });
     }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        switch (requestCode) {
-//            case REQUEST_CODE_CITIES_ACTIVITY:
-//                if (resultCode == RESULT_OK) {
-//                    String returnedData = data.getStringExtra(CitiesActivity.EXTRA_SELECTED_CITY);
-//                    Log.d(TAG, "onActivityResult: " + returnedData);
-//                }
-//        }
-//    }
 
     @Override
     protected void onResume() {

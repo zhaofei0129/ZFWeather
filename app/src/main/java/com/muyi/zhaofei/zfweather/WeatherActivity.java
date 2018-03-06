@@ -27,6 +27,9 @@ import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,27 +64,26 @@ public class WeatherActivity extends BasicActivity {
     private List<Weather> mWeathers;
     private String mCityName;
 
-    private class WeatherViewHolder extends RecyclerView.ViewHolder {
 
-        TextView mWeekdayTextView;
-        TextView mTodayTextView;
-//        TextView mCondDTextView;
-        ImageView mCondDImageView;
-        TextView mMaxTmpTextView;
-        TextView mMinTmpTextView;
 
-        public WeatherViewHolder(View view) {
-            super(view);
-            mWeekdayTextView = (TextView)view.findViewById(R.id.id_weekday_text_view);
-            mTodayTextView = (TextView)view.findViewById(R.id.id_today_text_view);
-//            mCondDTextView = (TextView)view.findViewById(R.id.id_cond_d_text_view);
-            mCondDImageView = (ImageView)view.findViewById(R.id.id_cond_d_image_view);
-            mMaxTmpTextView = (TextView)view.findViewById(R.id.id_max_tmp_text_view);
-            mMinTmpTextView = (TextView)view.findViewById(R.id.id_min_tmp_text_view);
+    private class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHolder> {
+        class ViewHolder extends RecyclerView.ViewHolder {
+
+            TextView mWeekdayTextView;
+            TextView mTodayTextView;
+            ImageView mCondDImageView;
+            TextView mMaxTmpTextView;
+            TextView mMinTmpTextView;
+
+            public ViewHolder(View view) {
+                super(view);
+                mWeekdayTextView = (TextView)view.findViewById(R.id.id_weekday_text_view);
+                mTodayTextView = (TextView)view.findViewById(R.id.id_today_text_view);
+                mCondDImageView = (ImageView)view.findViewById(R.id.id_cond_d_image_view);
+                mMaxTmpTextView = (TextView)view.findViewById(R.id.id_max_tmp_text_view);
+                mMinTmpTextView = (TextView)view.findViewById(R.id.id_min_tmp_text_view);
+            }
         }
-    }
-
-    private class WeatherAdapter extends RecyclerView.Adapter<WeatherViewHolder> {
         private List<Weather> mWeathers;
 
         public WeatherAdapter(List<Weather> weathers) {
@@ -89,14 +91,14 @@ public class WeatherActivity extends BasicActivity {
         }
 
         @Override
-        public WeatherViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.weather_item, null, false);
-            WeatherViewHolder holder = new WeatherViewHolder(view);
+            ViewHolder holder = new ViewHolder(view);
             return holder;
         }
 
         @Override
-        public void onBindViewHolder(WeatherViewHolder holder, int position) {
+        public void onBindViewHolder(ViewHolder holder, int position) {
             Weather weather = mWeathers.get(position);
             String[] weeks = new String[]{"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
             Calendar c = Calendar.getInstance();
@@ -106,7 +108,6 @@ public class WeatherActivity extends BasicActivity {
             if (position == 0) {
                 holder.mTodayTextView.setText("今天");
             }
-//            holder.mCondDTextView.setText(weather.getConditionDaytime());
             //  将图片名称以字母开头，根据不同天气代码返回相应。。。
             Resources resources = WeatherActivity.this.getResources();
             int resID = resources.getIdentifier(weather.getConditionDaytimeCode(), "drawable", getPackageName());
@@ -136,11 +137,11 @@ public class WeatherActivity extends BasicActivity {
                 e.printStackTrace();
             }
             for (int i = 0; i < 3; i++) {
-
                 Weather weather = new Weather();
                 if (i == 0) {
                     String weatherNowAddress = HE_WEATHER_ADDRESS + "weather/now?location=" + str + "&key=" + HE_WEATHER_API_KEY;
                     String weatherNowJsonStr = getJsonStr(weatherNowAddress);
+
                     try {
                         JSONObject weatherNowJson = new JSONObject(weatherNowJsonStr);
                         JSONArray heWeather6Array = weatherNowJson.getJSONArray("HeWeather6");
@@ -162,17 +163,14 @@ public class WeatherActivity extends BasicActivity {
                     JSONObject heWeather6 = heWeather6Array.getJSONObject(0);
                     JSONArray dailyForecastArray = heWeather6.getJSONArray("daily_forecast");
                     JSONObject dailyForcast = dailyForecastArray.getJSONObject(i);
-//                    weather.setConditionDaytime(dailyForcast.getString("cond_txt_d"));
                     weather.setConditionDaytimeCode(dailyForcast.getString("cond_code_d"));
                     weather.setMaxTmp(dailyForcast.getString("tmp_max"));
                     weather.setMinTmp(dailyForcast.getString("tmp_min"));
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 weathers.add(weather);
             }
-
             return weathers;
         }
 
@@ -251,7 +249,7 @@ public class WeatherActivity extends BasicActivity {
         citysButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = SelectedCitiesActivity.newIntent(WeatherActivity.this, mWeathers.get(0).getCity());
+                Intent intent = SelectedCitiesActivity.newIntent(WeatherActivity.this);
                 startActivityForResult(intent, REQUEST_CODE_SELECTED_CITIES_ACTIVITY);
             }
         });
@@ -318,38 +316,47 @@ public class WeatherActivity extends BasicActivity {
     }
 
     private String getJsonStr(String address) {
-        HttpURLConnection connection = null;
+//        HttpURLConnection connection = null;
+//        try {
+//            URL url = new URL(address);
+//            connection = (HttpURLConnection) url.openConnection();
+//            connection.setRequestMethod("GET");
+//            connection.setConnectTimeout(8000);
+//            connection.setReadTimeout(8000);
+//            connection.setDoInput(true);
+//            connection.setDoOutput(true);
+//            InputStream in = connection.getInputStream();
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+//            StringBuilder response = new StringBuilder();
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                response.append(line);
+//            }
+//            return response.toString();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return e.getMessage();
+//        } finally {
+//            if (connection != null) {
+//                connection.disconnect();
+//            }
+//        }
         try {
-            URL url = new URL(address);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setConnectTimeout(8000);
-            connection.setReadTimeout(8000);
-            connection.setDoInput(true);
-            connection.setDoOutput(true);
-            InputStream in = connection.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
-            }
-            return response.toString();
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder().url(address).build();
+            Response response = client.newCall(request).execute();
+            return response.body().string();
         } catch (IOException e) {
             e.printStackTrace();
             return e.getMessage();
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume: 11");
-
+        Log.d(TAG, "onResume: sql-");
+        CityLab.getSingleInstance(this).query();
     }
 
     //    @Override
@@ -361,7 +368,6 @@ public class WeatherActivity extends BasicActivity {
                     mCityName = data.getStringExtra(SelectedCitiesActivity.EXTRA_SELECTED_CITY_NAME);
                     Log.d(TAG, "onActivityResult: " + mCityName);
                             new DoGetWeatherDataAsyncTask().execute();
-
                 }
         }
     }
