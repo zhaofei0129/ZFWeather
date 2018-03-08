@@ -34,7 +34,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".SelectedCitiesActivity" />
-        <activity android:name=".CitiesActivity"></activity>
+        <activity android:name=".CitiesActivity">
+
+        </activity>
         
         <service
             android:name="com.baidu.location.f"

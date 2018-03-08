@@ -65,6 +65,15 @@ public class CityLab {
         return null;
     }
 
+    public City getLocatedCity() {
+        for (City city: mCities) {
+            if (city.isLocated()) {
+                return city;
+            }
+        }
+        return null;
+    }
+
     public void addCity(City city) {
         boolean isRepeated = false;
         for (City c: mCities) {
@@ -81,7 +90,7 @@ public class CityLab {
 
     }
 
-    public void updateCity(City city) {
+    public void updateSelectedCity(City city) {
         for (int i = 0; i < mCities.size(); i++) {
             if (mCities.get(i).isSelected() == true) {
                 mCities.get(i).setSelected(false);
@@ -99,13 +108,27 @@ public class CityLab {
                 break;
             }
         }
-
-//        mDatabase.update(CityDatabaseHelper.CITY_TABLE, values, CityDatabaseHelper.CITY_COL + " = ?", new String[]{"南京"});
-
     }
 
-    public void deleteCity(City city) {
-        mDatabase.delete(CityDatabaseHelper.CITY_TABLE, CityDatabaseHelper.CITY_COL + " = ?", new String[]{city.getName()});
+    public void updateLocatedCity(City city) {
+        for (int i = 0; i < mCities.size(); i++) {
+            if (mCities.get(i).isLocated() == true) {
+                mCities.get(i).setName(city.getName());
+                ContentValues values = getContentValues(mCities.get(i));
+                mDatabase.update(CityDatabaseHelper.CITY_TABLE, values, CityDatabaseHelper.IS_LOCATED_COL + " = ?", new String[]{"1"});
+                break;
+            }
+        }
+    }
+    public void deleteSelectedCity(City city) {
+        for (int i = 1; i < mCities.size(); i++) {
+            if (mCities.get(i).getName().equals(city.getName())) {
+                ContentValues values = getContentValues(mCities.get(i));
+                mDatabase.delete(CityDatabaseHelper.CITY_TABLE, CityDatabaseHelper.CITY_COL + " = ? AND " +  CityDatabaseHelper.IS_LOCATED_COL + " = ?", new String[]{city.getName(), "0"});
+                mCities.remove(i);
+                break;
+            }
+        }
     }
 
     public void query() {

@@ -1,16 +1,21 @@
 package com.muyi.zhaofei.zfweather;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -146,6 +151,23 @@ public class WeatherActivity extends BasicActivity {
                         JSONObject weatherNowJson = new JSONObject(weatherNowJsonStr);
                         JSONArray heWeather6Array = weatherNowJson.getJSONArray("HeWeather6");
                         JSONObject heWeather6 = heWeather6Array.getJSONObject(0);
+                        String status = heWeather6.getString("status");
+                        if (!status.equals("ok")) {
+                            AlertDialog.Builder dialog = new AlertDialog.Builder(WeatherActivity.this);
+                            Log.d(TAG, "doInBackground: 的撒啊啊啊啊啊");
+                            dialog.setTitle("提醒");
+                            dialog.setMessage("未找到该城市");
+                            dialog.setCancelable(false);
+                            dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            });
+                            dialog.show();
+                        }
+                        Log.d(TAG, "doInBackground: 的撒啊啊");
+
                         JSONObject now = heWeather6.getJSONObject("now");
                         JSONObject basic = heWeather6.getJSONObject("basic");
                         weather.setCity(basic.getString("parent_city"));
@@ -205,62 +227,99 @@ public class WeatherActivity extends BasicActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         setContentView(R.layout.activity_weather);
 
-        mLocationClient = new LocationClient(getApplicationContext());
-        //声明LocationClient类
-        mLocationClient.registerLocationListener(new BDAbstractLocationListener() {
-            @Override
-            public void onReceiveLocation(BDLocation bdLocation) {
-                //此处的BDLocation为定位结果信息类，通过它的各种get方法可获取定位相关的全部结果
-                //以下只列举部分获取经纬度相关（常用）的结果信息
-                mCityName = bdLocation.getCity();    //获取城市
-                Log.d(TAG, "onReceiveLocation: " + mCityName);
-                City c = new City();
-                c.setName(mCityName);
-                c.setLocated(true);
-                c.setSelected(true);
-                CityLab.getSingleInstance(WeatherActivity.this).addCity(c);
-                new DoGetWeatherDataAsyncTask().execute();
+        ConnectivityManager manager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isAvailable()) {
+            CityLab.getSingleInstance(this);
+            final boolean isTheFirstTimeOpen;
+            SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+            isTheFirstTimeOpen = preferences.getBoolean(KEY_IS_THE_FIRST_TIME_OPEN, true);
+            if (isTheFirstTimeOpen) {
+                SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+                editor.putBoolean(KEY_IS_THE_FIRST_TIME_OPEN, false);
+                editor.apply();
+                Log.d(TAG, "onCreate: is first time");
+            } else {
+                Log.d(TAG, "onCreate: is not first time");
+                mCityName = CityLab.getSingleInstance(this).getSelectedCity().getName();
             }
-        });
-        //注册监听函数
-        setLocationClient();
+
+            mLocationClient = new LocationClient(getApplicationContext());
+            //声明LocationClient类
+            mLocationClient.registerLocationListener(new BDAbstractLocationListener() {
+                @Override
+                public void onReceiveLocation(BDLocation bdLocation) {
+                    //此处的BDLocation为定位结果信息类，通过它的各种get方法可获取定位相关的全部结果
+                    //以下只列举部分获取经纬度相关（常用）的结果信息
+                    String currentLocatedCityName = bdLocation.getCity();    //获取城市
+                    if (currentLocatedCityName == null) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(WeatherActivity.this);
+                        dialog.setTitle("提醒");
+                        dialog.setMessage("请打开定位");
+                        dialog.setCancelable(false);
+                        dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        });
+                        dialog.show();
+                    } else {
+                        if (isTheFirstTimeOpen) {
+                            mCityName = currentLocatedCityName;
+                            Log.d(TAG, "onReceiveLocation: " + mCityName);
+                            City c = new City();
+                            c.setName(currentLocatedCityName);
+                            c.setLocated(true);
+                            c.setSelected(true);
+                            CityLab.getSingleInstance(WeatherActivity.this).addCity(c);
+                        } else {
+                            if (!CityLab.getSingleInstance(WeatherActivity.this).getLocatedCity().getName().equals(currentLocatedCityName)) {
+                                City c = new City();
+                                c.setName(currentLocatedCityName);
+                                CityLab.getSingleInstance(WeatherActivity.this).updateLocatedCity(c);
+                            }
+                        }
+                        new DoGetWeatherDataAsyncTask().execute();
+                    }
+
+                }
+            });
+            //注册监听函数
+            setLocationClient();
 //mLocationClient为第二步初始化过的LocationClient对象
 //调用LocationClient的start()方法，便可发起定位请求
-
-
-
-        CityLab.getSingleInstance(this);
-        boolean isTheFirstTimeOpen;
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        isTheFirstTimeOpen = preferences.getBoolean(KEY_IS_THE_FIRST_TIME_OPEN, true);
-        if (isTheFirstTimeOpen) {
-            SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
-            editor.putBoolean(KEY_IS_THE_FIRST_TIME_OPEN, false);
-            editor.apply();
-            Log.d(TAG, "onCreate: is first time");
             mLocationClient.start();
+            Button citysButton = (Button)findViewById(R.id.id_citys_button);
+            citysButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = SelectedCitiesActivity.newIntent(WeatherActivity.this);
+                    startActivityForResult(intent, REQUEST_CODE_SELECTED_CITIES_ACTIVITY);
+                }
+            });
         } else {
-            Log.d(TAG, "onCreate: is not first time");
-            mCityName = CityLab.getSingleInstance(this).getSelectedCity().getName();
-            new DoGetWeatherDataAsyncTask().execute();
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle("提醒");
+            dialog.setMessage("请打开网络");
+            dialog.setCancelable(false);
+            dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+            dialog.show();
         }
-
-        Button citysButton = (Button)findViewById(R.id.id_citys_button);
-        citysButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = SelectedCitiesActivity.newIntent(WeatherActivity.this);
-                startActivityForResult(intent, REQUEST_CODE_SELECTED_CITIES_ACTIVITY);
-            }
-        });
 
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mLocationClient.stop();//停止定位
-
+        if (mLocationClient != null) {
+            mLocationClient.stop();//停止定位
+        }
     }
 
     private void setLocationClient() {
@@ -316,31 +375,6 @@ public class WeatherActivity extends BasicActivity {
     }
 
     private String getJsonStr(String address) {
-//        HttpURLConnection connection = null;
-//        try {
-//            URL url = new URL(address);
-//            connection = (HttpURLConnection) url.openConnection();
-//            connection.setRequestMethod("GET");
-//            connection.setConnectTimeout(8000);
-//            connection.setReadTimeout(8000);
-//            connection.setDoInput(true);
-//            connection.setDoOutput(true);
-//            InputStream in = connection.getInputStream();
-//            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-//            StringBuilder response = new StringBuilder();
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                response.append(line);
-//            }
-//            return response.toString();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return e.getMessage();
-//        } finally {
-//            if (connection != null) {
-//                connection.disconnect();
-//            }
-//        }
         try {
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder().url(address).build();
@@ -355,7 +389,6 @@ public class WeatherActivity extends BasicActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume: sql-");
         CityLab.getSingleInstance(this).query();
     }
 

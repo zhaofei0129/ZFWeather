@@ -2,6 +2,7 @@ package com.muyi.zhaofei.zfweather;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,12 +33,14 @@ public class SelectedCitiesActivity extends BasicActivity {
             TextView mCityTextView;
             TextView mLocatedTextView;
             TextView mSelectedTextView;
+            Button mDeleteButton;
 
             public ViewHolder(View view) {
                 super(view);
                 mCityTextView = (TextView)view.findViewById(R.id.id_city_text_view);
                 mLocatedTextView = (TextView)view.findViewById(R.id.id_locate_text_view);
                 mSelectedTextView = (TextView)view.findViewById(R.id.id_selected_text_view);
+                mDeleteButton = (Button)view.findViewById(R.id.id_delete_button);
 
             }
         }
@@ -51,13 +54,24 @@ public class SelectedCitiesActivity extends BasicActivity {
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.city_item, null, false);
             final ViewHolder holder = new ViewHolder(view);
+            holder.mDeleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String name = (String) holder.mCityTextView.getText();
+                    City city = new City();
+                    city.setName(name);
+                    CityLab.getSingleInstance(SelectedCitiesActivity.this).deleteSelectedCity(city);
+                    mAdapter.notifyDataSetChanged();
+                    Log.d(TAG, "onClick: delete" + name);
+                }
+            });
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     City city = new City();
                     city.setName((String) holder.mCityTextView.getText());
                     city.setSelected(true);
-                    CityLab.getSingleInstance(SelectedCitiesActivity.this).updateCity(city);
+                    CityLab.getSingleInstance(SelectedCitiesActivity.this).updateSelectedCity(city);
                     Intent intent = new Intent();
                     intent.putExtra(EXTRA_SELECTED_CITY_NAME, city.getName());
                     setResult(RESULT_OK, intent);
@@ -78,8 +92,10 @@ public class SelectedCitiesActivity extends BasicActivity {
             }
             if (mCitys.get(position).isLocated()) {
                 holder.mLocatedTextView.setText("定位");
+                holder.mDeleteButton.setVisibility(View.INVISIBLE);
             } else {
                 holder.mLocatedTextView.setText("");
+                holder.mDeleteButton.setText("删除");
             }
         }
 

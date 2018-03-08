@@ -30,7 +30,7 @@ public class CityDatabaseHelper extends SQLiteOpenHelper {
 //        mContext = context;
 //    }
     public CityDatabaseHelper(Context context) {
-        super(context, "City.db", null, 40);
+        super(context, "City.db", null, 62);
         mContext = context;
     }
 
