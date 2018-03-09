@@ -290,5 +290,134 @@
         <item>北海</item>
         <item>防城港</item>
     </string-array>
-
+    <string-array name="海南">
+        <item>海口</item>
+        <item>三亚</item>
+    </string-array>
+    <string-array name="贵州">
+        <item>贵阳</item>
+        <item>遵义</item>
+        <item>安顺</item>
+        <item>都匀</item>
+        <item>凯里</item>
+        <item>铜仁</item>
+        <item>毕节</item>
+        <item>水城</item>
+        <item>兴义</item>
+    </string-array>
+    <string-array name="云南">
+        <item>昆明</item>
+        <item>大理</item>
+        <item>红河</item>
+        <item>曲靖</item>
+        <item>保山</item>
+        <item>文山</item>
+        <item>玉溪</item>
+        <item>楚雄</item>
+        <item>普洱</item>
+        <item>昭通</item>
+        <item>临沧</item>
+        <item>怒江</item>
+        <item>香格里拉</item>
+        <item>丽江</item>
+        <item>德宏</item>
+        <item>景洪</item>
+    </string-array>
+    <string-array name="四川">
+        <item>成都</item>
+        <item>攀枝花</item>
+        <item>自贡</item>
+        <item>绵阳</item>
+        <item>南充</item>
+        <item>达州</item>
+        <item>遂宁</item>
+        <item>广安</item>
+        <item>巴中</item>
+        <item>泸州</item>
+        <item>宜宾</item>
+        <item>内江</item>
+        <item>资阳</item>
+        <item>乐山</item>
+        <item>眉山</item>
+        <item>凉山</item>
+        <item>雅安</item>
+        <item>甘孜</item>
+        <item>阿坝</item>
+        <item>德阳</item>
+        <item>广元</item>
+    </string-array>
+    <string-array name="西藏">
+        <item>拉萨</item>
+        <item>日喀则</item>
+        <item>山南</item>
+        <item>林芝</item>
+        <item>昌都</item>
+        <item>那曲</item>
+        <item>阿里</item>
+    </string-array>
+    <string-array name="陕西">
+        <item>西安</item>
+        <item>三原</item>
+        <item>延长</item>
+        <item>榆林</item>
+        <item>渭南</item>
+        <item>商洛</item>
+        <item>安康</item>
+        <item>汉中</item>
+        <item>宝鸡</item>
+        <item>铜川</item>
+        <item>杨凌</item>
+    </string-array>
+    <string-array name="宁夏">
+        <item>银川</item>
+        <item>石嘴山</item>
+        <item>吴忠</item>
+        <item>固原</item>
+        <item>中卫</item>
+    </string-array>
+    <string-array name="甘肃">
+        <item>兰州</item>
+        <item>定西</item>
+        <item>平凉</item>
+        <item>庆阳</item>
+        <item>武威</item>
+        <item>金昌</item>
+        <item>张掖</item>
+        <item>酒泉</item>
+        <item>天水</item>
+        <item>武都</item>
+        <item>临夏</item>
+        <item>合作</item>
+        <item>白银</item>
+        <item>嘉峪关</item>
+    </string-array>
+    <string-array name="青海">
+        <item>西宁</item>
+        <item>海东</item>
+        <item>黄南</item>
+        <item>海南</item>
+        <item>果洛</item>
+        <item>玉树</item>
+        <item>海西</item>
+        <item>海北</item>
+        <item>格尔木</item>
+    </string-array>
+    <string-array name="新疆">
+        <item>乌鲁木齐</item>
+        <item>克拉玛依</item>
+        <item>石河子</item>
+        <item>昌吉</item>
+        <item>吐鲁番</item>
+        <item>库尔勒</item>
+        <item>阿拉尔</item>
+        <item>阿克苏</item>
+        <item>喀什</item>
+        <item>伊宁</item>
+        <item>塔城</item>
+        <item>哈密</item>
+        <item>和田</item>
+        <item>阿勒泰</item>
+        <item>阿图什</item>
+        <item>博乐</item>
+    </string-array>
 </resources>

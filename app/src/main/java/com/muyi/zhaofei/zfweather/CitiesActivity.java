@@ -160,16 +160,16 @@ public class CitiesActivity extends BasicActivity {
             provinces.add("湖南");
             provinces.add("广东");
             provinces.add("广西");
-//            provinces.add("海南");
-//            provinces.add("贵州");
-//            provinces.add("云南");
-//            provinces.add("四川");
-//            provinces.add("西藏");
-//            provinces.add("陕西");
-//            provinces.add("宁夏");
-//            provinces.add("甘肃");
-//            provinces.add("青海");
-//            provinces.add("新疆");
+            provinces.add("海南");
+            provinces.add("贵州");
+            provinces.add("云南");
+            provinces.add("四川");
+            provinces.add("西藏");
+            provinces.add("陕西");
+            provinces.add("宁夏");
+            provinces.add("甘肃");
+            provinces.add("青海");
+            provinces.add("新疆");
 
             ProvinceAdapter adapter = new ProvinceAdapter(provinces);
             recyclerView.setAdapter(adapter);
@@ -251,36 +251,36 @@ public class CitiesActivity extends BasicActivity {
             case "广西":
                 resID = R.array.广西;
                 break;
-//            case "海南":
-//                resID = R.array.海南;
-//                break;
-//            case "贵州":
-//                resID = R.array.贵州;
-//                break;
-//            case "云南":
-//                resID = R.array.云南;
-//                break;
-//            case "四川":
-//                resID = R.array.四川;
-//                break;
-//            case "西藏":
-//                resID = R.array.西藏;
-//                break;
-//            case "陕西":
-//                resID = R.array.陕西;
-//                break;
-//            case "宁夏":
-//                resID = R.array.宁夏;
-//                break;
-//            case "甘肃":
-//                resID = R.array.甘肃;
-//                break;
-//            case "青海":
-//                resID = R.array.青海;
-//                break;
-//            case "新疆":
-//                resID = R.array.新疆;
-//                break;
+            case "海南":
+                resID = R.array.海南;
+                break;
+            case "贵州":
+                resID = R.array.贵州;
+                break;
+            case "云南":
+                resID = R.array.云南;
+                break;
+            case "四川":
+                resID = R.array.四川;
+                break;
+            case "西藏":
+                resID = R.array.西藏;
+                break;
+            case "陕西":
+                resID = R.array.陕西;
+                break;
+            case "宁夏":
+                resID = R.array.宁夏;
+                break;
+            case "甘肃":
+                resID = R.array.甘肃;
+                break;
+            case "青海":
+                resID = R.array.青海;
+                break;
+            case "新疆":
+                resID = R.array.新疆;
+                break;
             default:
         }
         return resID;

@@ -2,7 +2,6 @@ package com.muyi.zhaofei.zfweather;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,14 +31,14 @@ public class SelectedCitiesActivity extends BasicActivity {
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView mCityTextView;
             TextView mLocatedTextView;
-            TextView mSelectedTextView;
+//            TextView mSelectedTextView;
             Button mDeleteButton;
 
             public ViewHolder(View view) {
                 super(view);
                 mCityTextView = (TextView)view.findViewById(R.id.id_city_text_view);
                 mLocatedTextView = (TextView)view.findViewById(R.id.id_locate_text_view);
-                mSelectedTextView = (TextView)view.findViewById(R.id.id_selected_text_view);
+//                mSelectedTextView = (TextView)view.findViewById(R.id.id_selected_text_view);
                 mDeleteButton = (Button)view.findViewById(R.id.id_delete_button);
 
             }
@@ -52,7 +51,7 @@ public class SelectedCitiesActivity extends BasicActivity {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.city_item, null, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.selected_city_item, null, false);
             final ViewHolder holder = new ViewHolder(view);
             holder.mDeleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -85,11 +84,11 @@ public class SelectedCitiesActivity extends BasicActivity {
         public void onBindViewHolder(ViewHolder holder, int position) {
             String name = mCitys.get(position).getName();
             holder.mCityTextView.setText(name);
-            if (mCitys.get(position).isSelected()) {
-                holder.mSelectedTextView.setText("选择");
-            } else {
-                holder.mSelectedTextView.setText("");
-            }
+//            if (mCitys.get(position).isSelected()) {
+//                holder.mSelectedTextView.setText("选择");
+//            } else {
+//                holder.mSelectedTextView.setText("");
+//            }
             if (mCitys.get(position).isLocated()) {
                 holder.mLocatedTextView.setText("定位");
                 holder.mDeleteButton.setVisibility(View.INVISIBLE);
@@ -133,4 +132,5 @@ public class SelectedCitiesActivity extends BasicActivity {
         super.onResume();
         mAdapter.notifyDataSetChanged();
     }
+
 }

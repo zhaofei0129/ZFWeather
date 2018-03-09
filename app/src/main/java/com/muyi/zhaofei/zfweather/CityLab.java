@@ -123,7 +123,11 @@ public class CityLab {
     public void deleteSelectedCity(City city) {
         for (int i = 1; i < mCities.size(); i++) {
             if (mCities.get(i).getName().equals(city.getName())) {
-                ContentValues values = getContentValues(mCities.get(i));
+                if (mCities.get(i).isSelected()) {
+                    mCities.get(0).setSelected(true);
+                    ContentValues values = getContentValues(mCities.get(0));
+                    mDatabase.update(CityDatabaseHelper.CITY_TABLE, values, CityDatabaseHelper.IS_LOCATED_COL + " = ?", new String[]{"1"});
+                }
                 mDatabase.delete(CityDatabaseHelper.CITY_TABLE, CityDatabaseHelper.CITY_COL + " = ? AND " +  CityDatabaseHelper.IS_LOCATED_COL + " = ?", new String[]{city.getName(), "0"});
                 mCities.remove(i);
                 break;
